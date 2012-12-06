@@ -41,7 +41,7 @@ function ardrone.getframe(frame)
    if frame == nil then
       frame = torch.FloatTensor()
    end
-   frame:resize(360, 640)
+   frame:resize(180, 320)
    libardrone.getFrameArdrone(frame)
    return frame
 end

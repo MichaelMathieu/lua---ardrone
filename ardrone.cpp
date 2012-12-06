@@ -71,7 +71,7 @@ static int InitVideoArdrone(lua_State* L) {
 static int GetFrameArdrone(lua_State* L) {
   setLuaState(L);
   Tensor<float> frame = FromLuaStack<Tensor<float> >(1);
-  get_frame(frame.data(), 640, 360);
+  get_frame(frame.data(), 320, 180);
   return 0;
 }
 

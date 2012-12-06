@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#define PACKET_BUFFERED_NB 4
+#define PACKET_BUFFERED_NB 8
 
 AVFormatContext* pFormatCtx = NULL;
 AVCodecContext *pCodecCtx = NULL;
@@ -66,14 +66,132 @@ void* taskBufferFrame(void *arg){
   }
 }
 
+void reduce_c(unsigned char *bSrc, float *bDst, int wSrc, int hSrc, int wDst, int hDst, int sSrc)
+{
+   int x, y, pX, pY;
+   int ycomp;
+   int wPixelStep = (wSrc << 16) / wDst;
+   int wFullPix = (((wDst << 16) / wSrc) + 128) >> 8;
+   int wRest = wPixelStep & 0xffff;
+   int wNbPix;
+   if (wRest == 0)
+     wNbPix = (wPixelStep >> 16);
+   else
+      wNbPix = (wPixelStep >> 16) + 2;
 
+   int hPixelStep = (hSrc << 16) / hDst;
+   int hFullPix = (((hDst << 16) / hSrc) + 128) >> 8;
+   int hNbPix = (hPixelStep >> 16) + 2;
+
+   int wStartPoint, hStartPoint;
+   int xLine, yLine;
+   int xCoef, yCoef, fullCoef, alphaCoef, sumCoef;
+   int xEndCoef, yEndCoef;
+
+   int tCoefX[10000];
+   int tCoefY[10000];
+   int ptX = 0, ptY = 0;
+
+   int useCorrection = 0;
+
+   wStartPoint = 0;
+   for (x = 0 ; x < wDst ; x++)
+   {
+      xLine = (wStartPoint >> 16);
+      xCoef = wFullPix - (((wStartPoint & 0xffff) * wFullPix) >> 16);
+      xEndCoef = 256 - xCoef;
+      tCoefX[ptX++] = xLine;
+      tCoefX[ptX++] = xCoef;
+      for (pX = 1 ; pX < wNbPix; pX++)
+      {
+         if (xEndCoef >= wFullPix)
+         {
+            xCoef = wFullPix;
+            xEndCoef -= wFullPix;
+         }
+         else if (xEndCoef > 0)
+         {
+            xCoef = xEndCoef;
+            xEndCoef -= wFullPix;
+         }
+         else
+         {
+            xCoef = 0;
+         }
+         tCoefX[ptX++] = xCoef;
+      }
+      wStartPoint += wPixelStep;
+   }
+
+   hStartPoint = 0;
+   for (y = 0 ; y < hDst ; y++)
+   {
+      yLine = (hStartPoint >> 16);
+      yCoef = hFullPix - (((hStartPoint & 0xffff) * hFullPix) >> 16);
+      yEndCoef = 256 - yCoef;
+      tCoefY[ptY++] = yLine;
+      tCoefY[ptY++] = yCoef;
+      for (pY = 1 ; pY < hNbPix; pY++)
+      {
+         if (yEndCoef >= hFullPix)
+         {
+            yCoef = hFullPix;
+            yEndCoef -= hFullPix;
+         }
+         else if (yEndCoef > 0)
+         {
+            yCoef = yEndCoef;
+            yEndCoef -= hFullPix;
+         }
+         else
+         {
+            yCoef = 0;
+         }
+         tCoefY[ptY++] = yCoef;
+      }
+      hStartPoint += hPixelStep;
+   }
+
+   ptY = 0;
+   for (y = 0 ; y < hDst ; y++)
+   {
+      yLine = tCoefY[ptY++];
+
+      ptX = 0;
+      for (x = 0 ; x < wDst ; x++)
+      {
+         xLine = tCoefX[ptX++];
+
+         ycomp = 0;
+         for (pY = 0 ; pY < hNbPix; pY++)
+         {
+            yCoef = tCoefY[ptY + pY];
+            for (pX = 0 ; pX < wNbPix; pX++)
+            {
+               xCoef = tCoefX[ptX + pX];
+               fullCoef = xCoef * yCoef;
+
+               ycomp += *(bSrc + (yLine + pY) * sSrc + (xLine + pX)) * fullCoef;
+            }
+         }
+         ptX += wNbPix;
+
+         *bDst = ycomp / 255.0;
+         bDst++;
+      }
+      ptY += hNbPix;
+   }
+}
 int decode_frame(float * output, AVFrame* src, int width, int height){
   int i, j;
-  for(i = 0 ; i < height; i++){
-    for(j = 0 ; j < width; j++){
-      output[i*width + j] = *(src->data[0]+i * src->linesize[0] + j) / 255.0;
-    }
-  }
+
+  reduce_c(src->data[0], output, 640, 360, width, height, src->linesize[0]);
+
+  /* for(i = 0 ; i < height; i++){ */
+  /*   for(j = 0 ; j < width; j++){ */
+  /*     output[i*width + j] = *(src->data[0]+i * src->linesize[0] + j) / 255.0; */
+  /*   } */
+  /* } */
   return 1;
 }
 
@@ -95,7 +213,7 @@ int get_frame(float * data, int width, int height){
     if(freeSlot[rArrayIdx] == 1){
       pthread_mutex_unlock(tmpLock);
       //printf("reader has nothing to read %u \n", rArrayIdx);
-      usleep(5000);
+      usleep(1000);
     }
     else{
       decode_frame(data, pFrameYUV[rArrayIdx], width, height);
