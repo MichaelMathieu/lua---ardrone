@@ -19,6 +19,8 @@ def test():
         pressed = pygame.key.get_pressed()
         space = deltakey(pressed, pygame.K_SPACE)
         e = deltakey(pressed, pygame.K_e)
+        c = deltakey(pressed, pygame.K_c)
+        m = deltakey(pressed, pygame.K_m)
         if space != None:
             if space == 1:
                 global takeoff
@@ -26,6 +28,12 @@ def test():
                 sender.takeoff(takeoff)
         if e != None:
             sender.emergency(e)
+        if c == 1:
+            sender.resettrim()
+            print "Resetting trim"
+        if m == 1:
+            sender.magcalib()
+            print "Calib mag"
         ud = pressed[pygame.K_UP] - pressed[pygame.K_DOWN]
         lr = pressed[pygame.K_LEFT] - pressed[pygame.K_RIGHT]
         rot = pressed[pygame.K_a]-pressed[pygame.K_d]

@@ -32,3 +32,16 @@ end
 function ardrone.emergency(ar, on)
    libardrone.emergencyArdrone(ar, on)
 end
+
+function ardrone.initvideo()
+   libardrone.initVideoArdrone()
+end
+
+function ardrone.getframe(frame)
+   if frame == nil then
+      frame = torch.FloatTensor()
+   end
+   frame:resize(360, 640)
+   libardrone.getFrameArdrone(frame)
+   return frame
+end

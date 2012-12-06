@@ -29,6 +29,7 @@ int cnt = 0;
 
 void* taskBufferFrame(void *arg){
   int frame_decoded = 0;
+  int fail = 0;
   pthread_mutex_t * tmpLock;
   AVPacket tmpPacket;
   av_init_packet(&tmpPacket);
@@ -48,16 +49,23 @@ void* taskBufferFrame(void *arg){
       }
       else{
 	printf("buffer can't decode %u \n", wArrayIdx);
+	fail = 1;
       }
     }
     else{
       printf("buffer can't read %u \n", wArrayIdx);
       av_free_packet(&tmpPacket);
       av_init_packet(&tmpPacket);
+      fail = 1;
     }
     pthread_mutex_unlock(tmpLock);
+    if(fail){
+      usleep(5000);
+      fail = 0;
+    }
   }
 }
+
 
 int decode_frame(float * output, AVFrame* src, int width, int height){
   int i, j;
@@ -173,7 +181,7 @@ int init_video(){
   printf("\tLaunching task ... \n");
   if(pthread_create(&(tId), NULL, &taskBufferFrame, NULL) != 0){
     fprintf(stderr, "Can't create task\n");
-    return EXIT_FAILURE; 
+    return EXIT_FAILURE;
   }
   printf("done\n");
   

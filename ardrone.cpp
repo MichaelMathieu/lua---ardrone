@@ -8,6 +8,7 @@ using namespace std;
 using namespace TH;
 
 #include "ardrone.h"
+#include "ffmpeg_wrapper.h"
 #include<cstring>
 
 static int InitArdrone(lua_State* L) {
@@ -17,6 +18,10 @@ static int InitArdrone(lua_State* L) {
   Ardrone* ar = new Ardrone();
 
   ar->pipeC = fopen(pipe.c_str(), "w");
+  
+  // TODO : To improve custom size and stream
+  // Init ffmpeg_wrapper
+  //init_video();
 
   lua_pushlightuserdata(L, (void*)ar);
   return 1;
@@ -33,6 +38,7 @@ static int TakeoffArdrone(lua_State* L) {
 }
 
 static int EmergencyArdrone(lua_State* L) {
+  setLuaState(L);
   Ardrone* ar = (Ardrone*)lua_touserdata(L, 1);
   int takeoff = FromLuaStack<int>(2);
   char buffer[8];
@@ -43,6 +49,7 @@ static int EmergencyArdrone(lua_State* L) {
 }
 
 static int CommandArdrone(lua_State* L) {
+  setLuaState(L);
   Ardrone* ar = (Ardrone*)lua_touserdata(L, 1);
   float fb = FromLuaStack<float>(2);
   float lr = FromLuaStack<float>(3);
@@ -52,6 +59,19 @@ static int CommandArdrone(lua_State* L) {
   sprintf(buffer, "$C%f,%f,%f,%f#",fb, lr, rot, alt);
   fwrite(buffer, sizeof(char), strlen(buffer), ar->pipeC);
   fflush(ar->pipeC);
+  return 0;
+}
+
+static int InitVideoArdrone(lua_State* L) {
+  setLuaState(L);
+  init_video();
+  return 0;
+}
+
+static int GetFrameArdrone(lua_State* L) {
+  setLuaState(L);
+  Tensor<float> frame = FromLuaStack<Tensor<float> >(1);
+  get_frame(frame.data(), 640, 360);
   return 0;
 }
 
@@ -77,6 +97,8 @@ static const luaL_reg libardrone_init [] = {
   {"commandArdrone", CommandArdrone},
   {"takeoffArdrone", TakeoffArdrone},
   {"emergencyArdrone", EmergencyArdrone},
+  {"getFrameArdrone", GetFrameArdrone},
+  {"initVideoArdrone", InitVideoArdrone},
   {"releaseArdrone", ReleaseArdrone},
   {NULL, NULL}
 };

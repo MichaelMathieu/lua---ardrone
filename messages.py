@@ -13,6 +13,7 @@ class ClientUDPProtocol(DatagramProtocol):
         self.transport.connect(self.address, self.port)
 
     def sendDatagram(self, data):
+        #print "Sending ", data
         self.transport.write(data)
 
     def datagramReceived(self, data, host):
@@ -51,9 +52,20 @@ class Sender(object):
         tosend = ("AT*PCMD=$,%d,%d,%d,%d,%d\r"%(1, FloatToInt(-lr), FloatToInt(-fb), FloatToInt(alt), FloatToInt(-rot)))
         self.repeat = tosend
 
+    def watchdog(self):
+        self.send("AT*COMWDG")
+
+    def resettrim(self):
+        self.send("AT*FTRIM")
+
+    def magcalib(self):
+        self.send("AT*CALIB")
+
     def update(self):
         if self.repeat != None:
+            #print "Repeating", self.repeat
             self.send(self.repeat)
+        self.watchdog()
 
 def start(f, fps):
     tick = LoopingCall(f)
