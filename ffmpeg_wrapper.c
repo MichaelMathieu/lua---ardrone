@@ -246,8 +246,6 @@ int init_video(){
   }
   printf("done\n");
 
-  av_dump_format(pFormatCtx, 0, "video_test.mp4", 0);
-
   //search video stream
   printf("\tsearching video stream among %d streams... \n", pFormatCtx->nb_streams);
   for(i = 0;i<pFormatCtx->nb_streams;i++){

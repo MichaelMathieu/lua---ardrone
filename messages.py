@@ -2,6 +2,7 @@ from twisted.internet.protocol import ClientFactory, Protocol, DatagramProtocol
 from twisted.internet import reactor
 from twisted.internet.task import LoopingCall
 import struct
+import time
 
 class ClientUDPProtocol(DatagramProtocol):
     def __init__(self, port, address, on_received):
@@ -57,6 +58,37 @@ class Sender(object):
 
     def resettrim(self):
         self.send("AT*FTRIM")
+
+    def recordvideo(self, on):
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"custom:session_id\",\"aaaaaaaa\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"custom:application_id\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"custom:profile_id\",\"bbbbbbbb\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+
+        
+        
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"video:video_on_usb\",\"TRUE\"\r")
+        self.send(tosend)
+        self.repeat = None
 
     def magcalib(self):
         self.send("AT*CALIB")

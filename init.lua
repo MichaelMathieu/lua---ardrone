@@ -13,7 +13,11 @@ ardrone = {}
 require 'libardrone'
 
 function ardrone.new(pipe)
-   local ar = libardrone.initArdrone(pipe)
+   if pipe then
+      local ar = libardrone.initArdrone(pipe)
+   else
+      local ar
+   end
    return ar
 end
 
@@ -41,7 +45,7 @@ function ardrone.getframe(frame)
    if frame == nil then
       frame = torch.FloatTensor()
    end
-   frame:resize(180, 320)
+   frame:resize(1, 180, 320)
    libardrone.getFrameArdrone(frame)
    return frame
 end

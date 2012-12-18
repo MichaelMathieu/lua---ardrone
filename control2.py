@@ -19,6 +19,7 @@ def test():
         pressed = pygame.key.get_pressed()
         space = deltakey(pressed, pygame.K_SPACE)
         e = deltakey(pressed, pygame.K_e)
+        v = deltakey(pressed, pygame.K_v)
         c = deltakey(pressed, pygame.K_c)
         m = deltakey(pressed, pygame.K_m)
         if space != None:
@@ -31,6 +32,9 @@ def test():
         if c == 1:
             sender.resettrim()
             print "Resetting trim"
+        if v == 1:
+            sender.recordvideo(v)
+            print "Recoding Video"
         if m == 1:
             sender.magcalib()
             print "Calib mag"
