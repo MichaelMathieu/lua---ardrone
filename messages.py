@@ -60,34 +60,88 @@ class Sender(object):
         self.send("AT*FTRIM")
 
     def recordvideo(self, on):
-        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
-        self.send(tosend)
-        time.sleep(0.1)
-        tosend = ("AT*CONFIG=$,\"custom:session_id\",\"aaaaaaaa\"\r")
-        self.send(tosend)
-        time.sleep(0.1)
+        print("Record :" + str(on))
 
-        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
-        self.send(tosend)
-        time.sleep(0.1)
-        tosend = ("AT*CONFIG=$,\"custom:application_id\",\"cccccccc\"\r")
-        self.send(tosend)
-        time.sleep(0.1)
+        if on == 1:
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"custom:session_id\",\"aaaaaaaa\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"custom:application_id\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"custom:profile_id\",\"bbbbbbbb\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"video:video_channel\",\"0\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+                        
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"video:video_on_usb\",\"TRUE\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            self.repeat = None
 
-        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
-        self.send(tosend)
-        time.sleep(0.1)
-        tosend = ("AT*CONFIG=$,\"custom:profile_id\",\"bbbbbbbb\"\r")
-        self.send(tosend)
-        time.sleep(0.1)
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"video:video_codec\",\"130\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"userbox:userbox_command\",\"1\",\"20121221_172834\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            
+        else:
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"video:video_on_usb\",\"FALSE\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            self.repeat = None
 
-        
-        
-        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
-        self.send(tosend)
-        time.sleep(0.1)
-        tosend = ("AT*CONFIG=$,\"video:video_on_usb\",\"TRUE\"\r")
-        self.send(tosend)
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"video:video_codec\",\"129\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            
+            tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+            tosend = ("AT*CONFIG=$,\"userbox:userbox_command\",\"0\"\r")
+            self.send(tosend)
+            time.sleep(0.1)
+        #tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        #self.send(tosend)
+        #time.sleep(0.1)
+        #tosend = ("AT*CONFIG=$,\"video:video_on_usb\",\"TRUE\"\r")
+        #self.send(tosend)
+        #self.repeat = None
+            
         self.repeat = None
 
     def magcalib(self):

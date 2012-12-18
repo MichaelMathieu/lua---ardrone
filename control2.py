@@ -4,6 +4,7 @@ import messages
 sender = messages.Sender()
 deltas = {}
 takeoff = 0
+record = 0
 def test():
     event = pygame.event.poll()
     if event.type != pygame.NOEVENT:
@@ -32,9 +33,11 @@ def test():
         if c == 1:
             sender.resettrim()
             print "Resetting trim"
-        if v == 1:
-            sender.recordvideo(v)
-            print "Recoding Video"
+        if v != None:
+            if v == 1:
+                global record
+                record = 1 - record
+                sender.recordvideo(record)
         if m == 1:
             sender.magcalib()
             print "Calib mag"
