@@ -59,6 +59,44 @@ class Sender(object):
     def resettrim(self):
         self.send("AT*FTRIM")
 
+    def confignavdata(self):
+        print("NavData")
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"custom:session_id\",\"aaaaaaaa\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"custom:application_id\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"custom:profile_id\",\"bbbbbbbb\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"general:navdata_demo\",\"FALSE\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+
+        tosend = ("AT*CONFIG_IDS=$,\"aaaaaaaa\",\"bbbbbbbb\",\"cccccccc\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+        tosend = ("AT*CONFIG=$,\"general:navdata_options\",\"105971713\"\r")
+        self.send(tosend)
+        time.sleep(0.1)
+
+
     def recordvideo(self, on):
         print("Record :" + str(on))
 

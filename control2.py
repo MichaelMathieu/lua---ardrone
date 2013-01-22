@@ -21,6 +21,7 @@ def test():
         space = deltakey(pressed, pygame.K_SPACE)
         e = deltakey(pressed, pygame.K_e)
         v = deltakey(pressed, pygame.K_v)
+        n = deltakey(pressed, pygame.K_n)
         c = deltakey(pressed, pygame.K_c)
         m = deltakey(pressed, pygame.K_m)
         if space != None:
@@ -33,6 +34,8 @@ def test():
         if c == 1:
             sender.resettrim()
             print "Resetting trim"
+        if n == 1:
+            sender.confignavdata()
         if v != None:
             if v == 1:
                 global record
