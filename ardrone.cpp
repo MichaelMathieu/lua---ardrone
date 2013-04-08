@@ -10,6 +10,8 @@ using namespace TH;
 #include "ardrone.h"
 #include "ffmpeg_wrapper.h"
 #include<cstring>
+#include<iostream>
+#include<cstdlib>
 
 static int InitArdrone(lua_State* L) {
   setLuaState(L);
@@ -18,6 +20,10 @@ static int InitArdrone(lua_State* L) {
   Ardrone* ar = new Ardrone();
 
   ar->pipeC = fopen(pipe.c_str(), "w");
+  if (!ar->pipeC) {
+    cerr << "Could not open pipe " << pipe << endl;
+    exit(0);
+  }
   
   // TODO : To improve custom size and stream
   // Init ffmpeg_wrapper

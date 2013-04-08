@@ -1,4 +1,5 @@
 import os
+import os.path
 import messages
 import threading
 import Queue
@@ -7,6 +8,9 @@ import time
 class PipeReader(threading.Thread):
     def __init__(self, pipename, queue):
         super(PipeReader, self).__init__()
+        if not os.path.exists(pipename):
+            print("Warning : fifo %s does not exist. Creating it..."%(pipename))
+            os.mkfifo(pipename)
         self.pipe = open(pipename, "r")
         self.queue = queue
         self.buffer = ""
@@ -38,7 +42,7 @@ class PipeReader(threading.Thread):
 if __name__=="__main__":
     sender = messages.Sender()
     q = Queue.Queue()
-    pipereader = PipeReader("/home/linaro/work/torch/packages/fifo_ardrone_cmd", q)
+    pipereader = PipeReader("fifo_ardrone_cmd", q)
     pipereader.start()
     def readpipe():
         try:

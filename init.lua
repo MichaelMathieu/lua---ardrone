@@ -13,12 +13,7 @@ ardrone = {}
 require 'libardrone'
 
 function ardrone.new(pipe)
-   if pipe then
-      local ar = libardrone.initArdrone(pipe)
-   else
-      local ar
-   end
-   return ar
+   return libardrone.initArdrone(pipe)
 end
 
 function ardrone.release(ar)
